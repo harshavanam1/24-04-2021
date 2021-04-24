@@ -1,0 +1,5 @@
+http.host: "localhost"
+http.port: "8081"
+http.path: "![b/bT4XjlXEN81+aGK88EGA==]"
+httpreq.host: "worldtimeapi.org"
+httpreq.basepath: "api/timezone"

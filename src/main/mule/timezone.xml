@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:s4hana="http://www.mulesoft.org/schema/mule/s4hana"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/s4hana http://www.mulesoft.org/schema/mule/s4hana/current/mule-s4hana.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="b6d63e23-0e7b-43c6-93bd-b4c2f4e5381e" >
+		<http:listener-connection host="${http.host}" port="${http.port}" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="f6fa4f3c-b638-431d-8eef-855762d5a8e7">
+		<http:request-connection host="${httpreq.host}" />
+	</http:request-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="617a36f6-d332-4a02-9db1-6660a3a9f584" file="config-local.yaml" />
+	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="90a8d3a9-a8ae-4389-9721-118a9f3a5102" />
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="8ab3542c-5dc5-483b-938b-51aeb4c44f82" >
+		<db:mssql-connection host="localhost" port="1433" user="sa" password="harshanani33" databaseName="Flights" />
+	</db:config>
+	<os:object-store name="Object_store" doc:name="Object store" doc:id="6e8fb5b8-7b00-4483-8040-5b45cbcb4e9c" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="d28f8128-761c-4bf8-8a9a-5e27b15823f7" key="123456789" file="config-local.yaml">
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+	<flow name="timezoneFlow" doc:id="51b13aef-caf0-4c41-9038-66292938727f" >
+		<http:listener doc:name="Listener" doc:id="1e202e4c-abec-4a45-8e77-7e998ecf3b8f" config-ref="HTTP_Listener_config" path="${secure::http.path}/{region}/{city}"/>
+		<logger level="INFO" doc:name="Logger" doc:id="b7bdd40a-e3cc-4e8f-ab49-2ce152b00b94" message="start::::#[payload]"/>
+		<http:request method="GET" doc:name="Request" doc:id="91c4eacd-c6c6-4f44-888c-33db2374de39" config-ref="HTTP_Request_configuration" path="/${httpreq.basepath}/{region}/{city}">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	city : attributes.uriParams.city,
+	region : attributes.uriParams.region
+}]]]></http:uri-params>
+		</http:request>
+		<choice doc:name="Choice" doc:id="976881f5-039d-40c7-8b7f-2af444e62b50" >
+			<when expression="#[!isEmpty(payload)]">
+				<set-variable value="#[p('secure::http.path')]" doc:name="Set Variable" doc:id="b5f9b2ef-6523-4d4f-a324-bc72ab4b1ce6" variableName="encrypt"/>
+				<ee:transform doc:name="Transform Message" doc:id="ad95c7cb-038f-41d1-8db6-16a31fd47715">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+"@@adsk":vars.encrypt]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<set-payload value='#["Payload should be something"]' doc:name="Set Payload" doc:id="9d6a4fd3-35de-47e3-839f-a9c30bb8f132" />
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Logger" doc:id="4fa171d1-be8f-42fa-8a28-9823a0da404b" message="Timezone::::::#[payload]" />
+	</flow>
+	<flow name="timezoneFlow1" doc:id="76442d92-f31e-42d0-a497-de27ca9b862e" >
+		<http:listener doc:name="Listener" doc:id="c5bd5a9d-f13e-43ab-891c-7fe4eb8e6877" config-ref="HTTP_Listener_config" path="/od"/>
+		<set-variable value="#[payload]" doc:name="Set Variable" doc:id="02e052ec-3807-405a-8b8a-9a6c495c6baf" variableName="idocccc"/>
+		<ee:transform doc:name="Transform Message" doc:id="89459641-3ab4-488e-a147-ea49892f567b" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="idoc" ><![CDATA["vardhan"]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="fc2f564a-34e2-4646-95ad-0ac7e5c7c3d8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Name":"Harsha",
+	"Email":"vh@gmail.com"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<choice doc:name="Choice" doc:id="b02e696d-7656-48e1-90e3-d33ee9b8a81e" >
+			<when expression='#[payload.Name=="Harsha"]'>
+				<http:request method="GET" doc:name="Request" doc:id="498c8ce3-77b3-42ff-99ca-3322c2ef087c" config-ref="HTTP_Request_configuration" path="/api/timezone/asia/kolkata">
+					<http:headers ><![CDATA[#[output application/java
+---
+{
+	"lastname" : vars.idoc
+}]]]></http:headers>
+				</http:request>
+				<logger level="INFO" doc:name="Logger" doc:id="c9017244-fdfe-4d2d-955e-d1cb5aeb70ff" message="head---#[payload]"/>
+			</when>
+			<otherwise >
+				<http:request method="GET" doc:name="Request" doc:id="6fc646ab-1b91-4a8c-a7ed-762e011c2ddc" config-ref="HTTP_Request_configuration" path="/api/timezone/America/Menominee"/>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="timezoneFlow2" doc:id="f0e72425-6419-42b2-a70c-55a8cd7bd850" >
+		<ee:transform doc:name="Transform Message" doc:id="468b5b7c-9cc8-4a05-b931-f64d9b3c61b0" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload.customer.address.city[0]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

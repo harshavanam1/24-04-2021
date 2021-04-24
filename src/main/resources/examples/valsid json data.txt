@@ -1,0 +1,69 @@
+{
+	"claimnumber": "145638978",
+	"type": " motor ",
+	"status": "paid",
+        "updateddate": "2017-02-28",
+	"customer": {
+		"customerID": "102",
+		"firstname": "harsha",
+                "nick": "nani",
+		"lastname": "vanam",
+		"Issubscriber": true, 
+		"Dateofbirth": "1992-12-12",
+		"Email": "vanamharsha92@gmail.com",
+                "destination":"LAX",
+                "countrycode": "USA",
+		"Phone": "9052161613",
+		"city": "Hyderabad",
+		"State": "Telangana",
+		"address": [{
+				"area": "nagaram",
+				"city": "Hyderabad",
+				"state": "Telangana",
+				"country": "india",
+				"isprimary": true
+			},
+			{
+				"area": "bell road",
+				"city": "banglore",
+				"state": "karnataka",
+				"country": "india",
+				"isprimary": false
+			}
+		]
+	},
+	"policy": {
+		"type": "AAA",
+		"policynum": "123",
+		"createddate": "2017-02-28",
+		"status": "active"
+	},
+	"incident": {
+		"type": "AAA",
+		"date": "2017-02-28",
+		"reportingdate": "2017-02-28",
+		"description": "motor vehicle damage",
+		"location": "hyd"
+	},
+	"payments": {
+		"date": "2015-05-23",
+		"amount": 70008,
+		"reference": "R1233",
+		"total": 70008.98,
+		"amountdue": 4228,
+		"amountpaid?": 457,
+		"paymentduedate": "2015-05-23",
+		"account": {
+			"accountid": "9312",
+			"code": "3332",
+			"accountholder": "harsha vanam",
+			"banckcode": "151008"
+		}
+	},
+	"documents": [{
+		"documentid": "11000399",
+		"documentstitle": "11000399.pdf",
+		"content": "iulRU9G++",
+		"createddate": "2016-02-28"
+	}]
+}

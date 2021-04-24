@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="ad" format="xml">
+      <types:example format="xml" element="ZORDERS05" location="examples/idoc-1.xml"/>
+    </types:type>
+    <types:type name="inp" format="json">
+      <types:shape format="weave" example="examples/valsid json data.txt"><![CDATA[%dw 2.0
+
+type inp = {|
+  claimnumber: String, 
+  "type": String, 
+  status: String, 
+  updateddate: String, 
+  customer: {|
+    customerID: String, 
+    firstname: String, 
+    nick: String, 
+    lastname: String, 
+    Issubscriber: Boolean, 
+    Dateofbirth: String, 
+    Email: String, 
+    destination: String, 
+    countrycode: String, 
+    Phone: String, 
+    city: String, 
+    State: String, 
+    address: Array<{|      area: String,       city: String,       state: String,       country: String,       isprimary: Boolean    |}>
+  |}, 
+  policy: {|
+    "type": String, 
+    policynum: String, 
+    createddate: String, 
+    status: String
+  |}, 
+  incident: {|
+    "type": String, 
+    date: String, 
+    reportingdate: String, 
+    description: String, 
+    location: String
+  |}, 
+  payments: {|
+    date: String, 
+    amount: Number {"typeId": "int"}, 
+    reference: String, 
+    total: Number {"typeId": "double"}, 
+    amountdue: Number {"typeId": "int"}, 
+    "amountpaid?": Number {"typeId": "int"}, 
+    paymentduedate: String, 
+    account: {|
+      accountid: String, 
+      code: String, 
+      accountholder: String, 
+      banckcode: String
+    |}
+  |}, 
+  documents: Array<{|    documentid: String,     documentstitle: String,     content: String,     createddate: String  |}>
+|} {"example": "{\\\"claimnumber\\\":\\\"145638978\\\",\\\"type\\\":\\\" motor \\\",\\\"status\\\":\\\"paid\\\",\\\"updateddate\\\":\\\"2017-02-28\\\",\\\"customer\\\":{\\\"customerID\\\":\\\"102\\\",\\\"firstname\\\":\\\"harsha\\\",\\\"nick\\\":\\\"nani\\\",\\\"lastname\\\":\\\"vanam\\\",\\\"Issubscriber\\\":true,\\\"Dateofbirth\\\":\\\"1992-12-12\\\",\\\"Email\\\":\\\"vanamharsha92@gmail.com\\\",\\\"destination\\\":\\\"LAX\\\",\\\"countrycode\\\":\\\"USA\\\",\\\"Phone\\\":\\\"9052161613\\\",\\\"city\\\":\\\"Hyderabad\\\",\\\"State\\\":\\\"Telangana\\\",\\\"address\\\":[{\\\"area\\\":\\\"nagaram\\\",\\\"city\\\":\\\"Hyderabad\\\",\\\"state\\\":\\\"Telangana\\\",\\\"country\\\":\\\"india\\\",\\\"isprimary\\\":true},{\\\"area\\\":\\\"bell road\\\",\\\"city\\\":\\\"banglore\\\",\\\"state\\\":\\\"karnataka\\\",\\\"country\\\":\\\"india\\\",\\\"isprimary\\\":false}]},\\\"policy\\\":{\\\"type\\\":\\\"AAA\\\",\\\"policynum\\\":\\\"123\\\",\\\"createddate\\\":\\\"2017-02-28\\\",\\\"status\\\":\\\"active\\\"},\\\"incident\\\":{\\\"type\\\":\\\"AAA\\\",\\\"date\\\":\\\"2017-02-28\\\",\\\"reportingdate\\\":\\\"2017-02-28\\\",\\\"description\\\":\\\"motor vehicle damage\\\",\\\"location\\\":\\\"hyd\\\"},\\\"payments\\\":{\\\"date\\\":\\\"2015-05-23\\\",\\\"amount\\\":70008,\\\"reference\\\":\\\"R1233\\\",\\\"total\\\":70008.98,\\\"amountdue\\\":4228,\\\"amountpaid?\\\":457,\\\"paymentduedate\\\":\\\"2015-05-23\\\",\\\"account\\\":{\\\"accountid\\\":\\\"9312\\\",\\\"code\\\":\\\"3332\\\",\\\"accountholder\\\":\\\"harsha vanam\\\",\\\"banckcode\\\":\\\"151008\\\"}},\\\"documents\\\":[{\\\"documentid\\\":\\\"11000399\\\",\\\"documentstitle\\\":\\\"11000399.pdf\\\",\\\"content\\\":\\\"iulRU9G++\\\",\\\"createddate\\\":\\\"2016-02-28\\\"}]}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#89459641-3ab4-488e-a147-ea49892f567b">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="ad"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#468b5b7c-9cc8-4a05-b931-f64d9b3c61b0">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="inp"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>
