@@ -4,7 +4,7 @@
 
 	<groupId>ad6a9b50-c8b9-4cbc-803a-46b87e060596</groupId>
 	<artifactId>timezone</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>mule-application</packaging>
 
 	<name>timezone</name>
