@@ -27,7 +27,7 @@ http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/sc
 	</secure-properties:config>
 	<flow name="timezoneFlow" doc:id="51b13aef-caf0-4c41-9038-66292938727f" >
 		<http:listener doc:name="Listener" doc:id="1e202e4c-abec-4a45-8e77-7e998ecf3b8f" config-ref="HTTP_Listener_config" path="${secure::http.path}/{region}/{city}"/>
-		<logger level="INFO" doc:name="Logger" doc:id="b7bdd40a-e3cc-4e8f-ab49-2ce152b00b94" message="start:#[payload]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="b7bdd40a-e3cc-4e8f-ab49-2ce152b00b94" message="start:::#[payload]"/>
 		<http:request method="GET" doc:name="Request" doc:id="91c4eacd-c6c6-4f44-888c-33db2374de39" config-ref="HTTP_Request_configuration" path="/${httpreq.basepath}/{region}/{city}">
 			<http:uri-params ><![CDATA[#[output application/java
 ---
@@ -44,7 +44,10 @@ http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/sc
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-"@@adsk":vars.encrypt]]></ee:set-payload>
+{
+"@@adsk":vars.encrypt,
+"payload":payload
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 			</when>
